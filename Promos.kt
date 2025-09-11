@@ -13,6 +13,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,7 +33,7 @@ class PromosActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            // Usando o MaterialTheme padrão, pois o tema "Promos" não estava definido.
+
             MaterialTheme {
                 MainScreen()
             }
@@ -37,16 +41,12 @@ class PromosActivity : ComponentActivity() {
     }
 }
 
-// --- Componentes da Tela ---
 
-/**
- * Função principal que organiza todos os elementos na tela.
- */
 @Composable
 fun MainScreen() {
     Scaffold(
         topBar = { TopBar() },
-        bottomBar = { BottomNavigationBar() } // Esta função foi criada abaixo
+        bottomBar = { BottomNavigationBar() }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -56,7 +56,7 @@ fun MainScreen() {
         ) {
             BannerPrincipal()
             IconRow()
-            OfertasSection() // Esta função foi completada abaixo
+            OfertasSection()
         }
     }
 }
@@ -79,9 +79,7 @@ fun TopBar() {
     )
 }
 
-/**
- * O banner promocional principal.
- */
+
 @Composable
 fun BannerPrincipal() {
     Box(
@@ -116,9 +114,7 @@ fun BannerPrincipal() {
     }
 }
 
-/**
- * A fileira de ícones de atalho (Cupons, Ofertas, etc.).
- */
+
 @Composable
 fun IconRow() {
     Row(
@@ -137,9 +133,7 @@ fun IconRow() {
     }
 }
 
-/**
- * Componente para um único ícone de atalho.
- */
+
 @Composable
 fun ShortcutIcon(icon: ImageVector, text: String) {
     Column(
@@ -168,9 +162,7 @@ fun ShortcutIcon(icon: ImageVector, text: String) {
     }
 }
 
-/**
- * A seção "Ofertas para comprar agora" com produtos (agora completa).
- */
+
 @Composable
 fun OfertasSection() {
     Column(
@@ -197,9 +189,7 @@ fun OfertasSection() {
     }
 }
 
-/**
- * Componente de exemplo para um card de produto.
- */
+
 @Composable
 fun ProdutoCard(item: Int) {
     Card(
@@ -230,16 +220,41 @@ fun ProdutoCard(item: Int) {
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(text = "R$ 99,90", color = Color(0xFF0033A0), fontWeight = FontWeight.SemiBold)
+                Row(){
+                    Text(text = "R$ 99,90", color = Color(0xFF0033A0), fontWeight = FontWeight.SemiBold)
+                    Spacer(modifier = Modifier.width(38.dp))
+                    BotaoFavorito()
+                }
+
             }
         }
     }
 }
 
 
-/**
- * Barra de navegação inferior que estava faltando.
- */
+@Composable
+fun BotaoFavorito() {
+    // 1. Crie uma variável de estado para controlar se o item é favorito ou não.
+    // `remember` garante que o estado seja mantido quando a tela for redesenhada.
+    var isFavorito by remember { mutableStateOf(false) }
+
+    IconButton(
+        onClick = {
+            // 3. A ação: inverta o valor do estado.
+            // Se for 'false', vira 'true'. Se for 'true', vira 'false'.
+            isFavorito = !isFavorito
+        }
+    ) {
+        Icon(
+            // 2. O ícone exibido agora depende do estado da variável 'isFavorito'.
+            imageVector = if (isFavorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+            contentDescription = if (isFavorito) "Remover dos favoritos" else "Adicionar aos favoritos",
+            modifier = Modifier.size(25.dp),
+            // Bônus: Mude a cor também com base no estado!
+            tint = if (isFavorito) Color.Red else Color.DarkGray
+        )
+    }
+}
 @Composable
 fun BottomNavigationBar() {
     NavigationBar(

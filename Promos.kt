@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.log
 
 class PromosActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -177,72 +179,85 @@ fun OfertasSection() {
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
-        // Usando LazyRow para uma lista rolável de produtos
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(5) { index -> // Criando 5 itens de exemplo
-                ProdutoCard(item = index + 1)
-            }
-        }
+
+        ProdutoCard()
     }
 }
 
 
-@Composable
-fun ProdutoCard(item: Int) {
-    Card(
-        modifier = Modifier.width(150.dp),
-        shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .background(Color.LightGray),
-                contentAlignment = Alignment.Center
-            ) {
-                // Em um app real, aqui iria a imagem do produto
-                Icon(
-                    imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = "Imagem do produto",
-                    modifier = Modifier.size(50.dp),
-                    tint = Color.DarkGray
-                )
-            }
-            Column(modifier = Modifier.padding(8.dp)) {
-                Text(
-                    text = "Nome do Produto $item",
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Row(){
-                    Text(text = "R$ 99,90", color = Color(0xFF0033A0), fontWeight = FontWeight.SemiBold)
-                    Spacer(modifier = Modifier.width(38.dp))
-                    BotaoFavorito()
-                }
 
+@Composable
+fun ProdutoCard() {
+    val produtos = produtosEmPromocao(listaProdutos())
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+
+        items(produtos){
+            produto ->
+
+
+        Card(
+            modifier = Modifier.width(150.dp),
+            shape = RoundedCornerShape(8.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp)
+                        .background(Color.LightGray),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // Em um app real, aqui iria a imagem do produto
+                    Icon(
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = "Imagem do produto",
+                        modifier = Modifier.size(50.dp),
+                        tint = Color.DarkGray
+                    )
+                }
+                Column(modifier = Modifier.padding(8.dp)) {
+                    Text(
+                        text = "${produto.titulo}",
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Row() {
+                        Text(
+                            text = "${produto.preco}",
+                            color = Color(0xFF0033A0),
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Spacer(modifier = Modifier.width(38.dp))
+                        BotaoFavorito()
+                    }
+
+                }
             }
         }
+        }
     }
+
+
+
 }
 
 
 @Composable
 fun BotaoFavorito() {
-    // 1. Crie uma variável de estado para controlar se o item é favorito ou não.
-    // `remember` garante que o estado seja mantido quando a tela for redesenhada.
+
+
     var isFavorito by remember { mutableStateOf(false) }
 
     IconButton(
         onClick = {
-            // 3. A ação: inverta o valor do estado.
-            // Se for 'false', vira 'true'. Se for 'true', vira 'false'.
+
             isFavorito = !isFavorito
+
         }
     ) {
         Icon(
@@ -291,5 +306,4 @@ fun DefaultPreview() {
         MainScreen()
     }
 }
-
 

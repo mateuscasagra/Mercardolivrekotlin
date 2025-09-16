@@ -76,6 +76,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MercardoLivreTheme {
+                var produtos = remember { mutableListOf(listaProdutos())}
                 Tela()
             }
         }
@@ -91,7 +92,25 @@ data class Produto(
     val icone: ImageVector,
     val titulo: String,
     val preco: Double,
+    val promo: Boolean,
+    val fav: Boolean
 )
+
+fun listaProdutos(): MutableList<Produto> {
+    var listaProdutos = mutableListOf(
+        Produto(Icons.Default.Favorite, "Meia", 100.00, true, false),
+        Produto(Icons.Default.Favorite, "Sapato", 100.00, true, false),
+        Produto(Icons.Default.Favorite, "Cinto", 100.00, false, false),
+        Produto(Icons.Default.Favorite, "Camisa", 100.00, true, false),
+        Produto(Icons.Default.Favorite, "Blusa", 100.00, false, false),
+        Produto(Icons.Default.Favorite, "Boné", 100.00, false, false)
+    )
+    return listaProdutos
+}
+
+fun produtosEmPromocao(listaProdutos: List<Produto>) : List<Produto>{
+    return listaProdutos.filter { produto -> produto.promo }.toMutableList()
+}
 @Composable
 fun Tela() {
     var textPesquisa by remember { mutableStateOf("")}
@@ -234,23 +253,16 @@ fun Icone(icone: ImageVector, texto: String){
 
 @Composable
 fun SecaoProdutos(){
-    val listaProdutos = listOf(
-        Produto(Icons.Default.Favorite, "Produto", 100.00),
-        Produto(Icons.Default.Favorite, "Produto", 100.00),
-        Produto(Icons.Default.Favorite, "Produto", 100.00),
-        Produto(Icons.Default.Favorite, "Produto", 100.00),
-        Produto(Icons.Default.Favorite, "Produto", 100.00),
-        Produto(Icons.Default.Favorite, "Produto", 100.00)
-    )
+    val produtos = listaProdutos()
     Column(modifier = Modifier.padding(horizontal = 16.dp)){
         Text("Também te interessa", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
 
-        for(i in listaProdutos.indices step 3) {
+        for(i in produtos.indices step 3) {
             Row(modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)){
-                for(j in i until min(i + 3, listaProdutos.size)){
-                    val produto = listaProdutos[j]
+                for(j in i until min(i + 3, produtos.size)){
+                    val produto = produtos[j]
                     CardProduto(
                         icone = produto.icone,
                         titulo = produto.titulo,

@@ -13,12 +13,6 @@
         android:theme="@style/Theme.MercardoLivre">
 
         <activity
-            android:name=".PromosActivity"
-            android:exported="false"
-            android:label="@string/title_activity_promos"
-            android:theme="@style/Theme.MercardoLivre" />
-
-        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
